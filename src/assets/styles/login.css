@@ -1,0 +1,183 @@
+.auth {
+    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .info {
+    font-weight: bold;
+    font-size: 18px;
+    color: #222222;
+    margin-top: 40px;
+    margin-bottom: 50px;
+  }
+  
+  .confirm {
+    margin-top: 22px;
+    margin-bottom: 50px;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    color: #F01F0E;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .button {
+    padding: 15px 30px;
+    width: 123px;
+    height: 48px;
+    font-size: 14px;
+    text-decoration: none;
+  }
+  
+  .button-full {
+    text-decoration: none;
+    background: #DB3022;
+    box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 4px 0px 0px 4px;
+    color: white;
+  }
+
+  .btn-login {
+    background: #DB3022;
+  }
+  
+  .button-shadow {
+    text-decoration: none;
+    border: 1px solid #9B9B9B;
+    box-sizing: border-box;
+    filter: drop-shadow(0px 1px 8px rgba(0, 0, 0, 0.05));
+    border-radius: 0px 4px 4px 0px;
+    color: gray;
+  }
+  
+  .form-section {
+    width: 400px;
+    margin-top: 40px;
+  }
+  .form-main {
+    display: flex;
+    margin-top: 16px;
+  }
+
+  h3 {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 28px;
+    text-align: center;
+    color: #DB3022;
+}
+  
+  input[type="text"],
+  input[type="password"],
+  input[type="name"] {
+    font-size: 14px;
+    padding: 7px 0px 7px 15px;
+    width: 100%;
+    height: 48px;
+    border: 1px solid #9B9B9B;
+    box-sizing: border-box;
+    filter: drop-shadow(0px 1px 8px rgba(0, 0, 0, 0.05));
+    border-radius: 4px;
+  }
+  
+  .forgot {
+    display: inline-block;
+    margin-top: 26px;
+    text-align: right;
+    width: 100%;
+    font-size: 14px;
+    color:#db3022;
+    text-decoration: none;
+  }
+  
+  .submit {
+    margin-top: 26px;
+    display: inline-block;
+    padding: 15px 30px;
+    width: 100%;
+    font-size: 14px;
+    color: #FFFFFF;
+    background: #DB3022;
+    border-radius: 25px;
+    text-decoration: none;
+  }
+  
+  .register {
+    margin-top: 40px;
+    font-size: 14px;
+    color: #222222;
+  }
+  
+  .register a {
+    color:#db3022;
+    text-decoration: none;
+  }
+  
+  @media only screen and (max-width: 420px) {
+    .form-section {
+    width: 100%;
+    }
+  }
+  
+  /* Navigation Bar */
+  .navbar {
+    background: #FFFFFF;
+    box-shadow: 0px 6px 40px rgba(173, 173, 173, 0.25);
+  }
+  
+  .navbar-brand {
+    margin-right: 50px;
+  }
+  
+  .input-group {
+    width: 450px;
+  }
+  
+  .search-form {
+    border: 1px solid #8E8E93;
+    border-radius: 23px;
+  }
+  
+  .search-btn {
+    border: 1px solid #8E8E93;
+    border-radius: 0px 23px 23px 0px;
+  }
+  
+  .filter-btn {
+    background: #FFFFFF;
+    border: 1px solid #8E8E93;
+    border-radius: 12px;
+    margin-left: 10px;
+  }
+  
+  .cart {
+    margin-left: 100px;
+    margin-right: 20px;
+  }
+  
+  .btn-full {
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    color: #FFFFFF;
+    background: #DB3022;
+    border-radius: 25px;
+    width: 100px;
+  }
+  
+  .btn-shadow {
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    border: 1px solid #9B9B9B;
+    box-sizing: border-box;
+    border-radius: 24px;
+    color: gray;
+    width: 100px;
+  }
