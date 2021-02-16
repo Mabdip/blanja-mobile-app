@@ -15,7 +15,12 @@ class Shipping extends React.Component {
     }
 
     getAddress = () => {
-        axios.get(BASE_URL + `/address/${this.props.auth.id}`)
+        const config = {
+            headers: {
+                'x-access-token': 'Bearer ' + this.props.auth.token,
+            },
+        };
+        axios.get(BASE_URL + `/address/${this.props.auth.id}`, config)
             .then(({ data }) => {
                 this.setState({
                     shippingAddress: data.data
@@ -81,6 +86,9 @@ class Shipping extends React.Component {
                         <SafeAreaView>
                             <ScrollView style={{ height: 380, marginBottom: 20, marginTop: 20 }}>
                                 {
+                                    shippingAddress.length > 0 ? (
+                                        <>
+                                        {
                                     shippingAddress && shippingAddress.map(({ id, recipient_name, city, postal, phone, address_type }) => {
                                         const color= this.state.selectedAddress == id? '#dedede' : 'white'
                                         return (
@@ -93,6 +101,15 @@ class Shipping extends React.Component {
                                             </>
                                         )
                                     })
+                                }
+                                        </>
+                                    ) : (
+                                        <View style={{flexDirection:'row', justifyContent: 'space-between',}}>
+                                            <Text></Text>
+                                            <Text style={{fontSize:24, fontWeight:'bold'}}>NO ADDRESS YET</Text>
+                                            <Text></Text>
+                                        </View>
+                                    )
                                 }
                             </ScrollView>
                         </SafeAreaView>

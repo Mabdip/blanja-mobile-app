@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Container, Header, Title, Content, Button, Left, Body, Text, View, Item, Label, Input } from "native-base";
 import { Image, StyleSheet, TouchableOpacity , ToastAndroid} from 'react-native'
+import { setLoginfalse } from './../../utils/redux/ActionCreators/auth'
 import {connect} from 'react-redux'
 import axios from 'axios'
 import { BASE_URL } from '@env'
@@ -23,28 +24,40 @@ class addShipping extends Component {
         const regexPhone = /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g
         if(!(this.state.phone.length >=11) || !(this.state.phone.length <= 15) || !regexPhone.test(this.state.phone)){
             ToastAndroid.show('Format pengisian no. HP salah', ToastAndroid.SHORT, ToastAndroid.BOTTOM);
-        }
-        if (this.state.address_type !== '') {
-            const addressData = {
-                address_type:this.state.address_type,
-                recipient_name:this.state.recipient_name,
-                address:this.state.address,
-                city:this.state.city,
-                postal:this.state.postal,
-                phone:this.state.phone,
-                user_id:this.props.auth.id
-            }
-            axios.post(BASE_URL + `/address/new`, addressData)
-                .then(({ data }) => {
-                    ToastAndroid.show(data.message, ToastAndroid.SHORT, ToastAndroid.BOTTOM);
-                    this.props.navigation.navigate('Shipping')
-                }).catch(({ response }) => {
-                    console.log(response.data)
+        }else{
+            if (this.state.address_type !== '') {
+                const addressData = {
+                    address_type:this.state.address_type,
+                    recipient_name:this.state.recipient_name,
+                    address:this.state.address,
+                    city:this.state.city,
+                    postal:this.state.postal,
+                    phone:this.state.phone,
+                    user_id:this.props.auth.id
+                }
+                const config = {
+                    headers: {
+                        'x-access-token': 'Bearer ' + this.props.auth.token,
+                    },
+                };
+                console.log(addressData)
+                axios.post(BASE_URL + `/address/new`, addressData, config)
+                    .then(({ data }) => {
+                        ToastAndroid.show(data.message, ToastAndroid.SHORT, ToastAndroid.BOTTOM);
+                        this.props.navigation.navigate('Shipping')
+                    }).catch(({ response }) => {
+                        if (response.status == 401) {
+                            ToastAndroid.show('SESI ANDA TELAH HABIS', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                            if (this.props.dispatch(setLoginfalse())) {
+                                this.props.navigation.replace('Profile')
+                            }
+                        }
+                    })
+            } else {
+                this.setState({
+                    errorForm: 'Data tidak boleh kosong'
                 })
-        } else {
-            this.setState({
-                errorForm: 'Data tidak boleh kosong'
-            })
+            }
         }
     }
 

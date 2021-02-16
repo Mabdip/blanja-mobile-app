@@ -22,12 +22,14 @@ class DetailPage extends Component {
     };
 
     componentDidMount = () => {
+        // console.log(`${BASE_URL}/product/getProductData/` + this.props.route.params.itemId)
         axios.get(`${BASE_URL}/product/getProductData/` + this.props.route.params.itemId)
             .then(({ data }) => {
-                console.log(data.data)
+                // console.log("detail produk: "+ data.data)
                 this.setState({
                     product: data.data
                 })
+                // console.log(`produk: ${this.state.product[0].user_id}`)
             }).catch((error) => {
                 console.log(error.response.data)
             })
@@ -91,7 +93,7 @@ class DetailPage extends Component {
                 qty: 1,
                 storeName: this.state.product.storeName
             }
-            console.log(Items)
+            console.log("items: " + Items)
             this.props.dispatch(addItems(Items))
             ToastAndroid.show("Berhasil menambah item ke keranjang.", ToastAndroid.SHORT);
         }
@@ -104,9 +106,11 @@ class DetailPage extends Component {
         if (this.props.auth.level==1) {
             btnChat = <TouchableOpacity
                 onPress={() => {
-                    this.props.navigation.navigate('Chat', {
+                    this.props.navigation.navigate('ChatRoom', {
                         room_id: `S${product[0].seller_id}B${this.props.auth.id}`
                     })
+                    console.log(`produk id: ${product[0]}`)
+                    console.log(`S${product[0].seller_id}B${this.props.auth.id}`)
                 }}>
                 <View style={styles.love}>
                     <Image source={require('./../../assets/icons/chat.png')} />
@@ -132,113 +136,112 @@ class DetailPage extends Component {
         const id_productDetails = this.props.route.params.itemId
         return (
             <>
-
                 {
                     product && product.map(({ id, product_name, storeName, category_name, product_desc, product_img, product_price, size_name, color_name, rating }) => {
 
-                        return (
-                            <>
-                                <Header transparent>
-                                    <Left>
-                                        <Button transparent
-                                            onPress={() => { this.props.navigation.goBack() }}
-                                        >
-                                            <Image source={require('./../../assets/back.png')} />
-                                        </Button>
-                                    </Left>
-                                    <Body >
-                                        <Title style={{ color: 'black', fontWeight: 'bold', width: 150 }}>{product_name}</Title>
-                                    </Body>
-                                </Header>
+                    return (
+                        <>
+                            <Header transparent>
+                                <Left>
+                                    <Button transparent
+                                        onPress={() => { this.props.navigation.goBack() }}
+                                    >
+                                        <Image source={require('./../../assets/back.png')} />
+                                    </Button>
+                                </Left>
+                                <Body >
+                                    <Title style={{ color: 'black', fontWeight: 'bold', width: 150 }}>{product_name}</Title>
+                                </Body>
+                            </Header>
 
-                                <Container>
-                                    <Grid>
-                                        <SafeAreaView>
-                                            <ScrollView id={id}>
-                                                <Row size={50}>
-                                                    <View style={styles.imgwrap}>
-                                                        <SafeAreaView>
-                                                            <ScrollView horizontal={true}>
+                            <Container>
+                                <Grid>
+                                    <SafeAreaView>
+                                        <ScrollView id={id}>
+                                            <Row size={50}>
+                                                <View style={styles.imgwrap}>
+                                                    <SafeAreaView>
+                                                        <ScrollView horizontal={true}>
+                                                            {
+                                                                product_img && product_img.split(',').map((img) => {
+                                                                    return (
+                                                                        <>
+                                                                            <Image source={{ uri: BASE_URL + img, width: 360, height: 400 }} />
+                                                                        </>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </ScrollView>
+                                                    </SafeAreaView>
+                                                </View>
+                                            </Row>
+
+                                            <Row size={50}>
+                                                <View style={styles.container}>
+                                                    <View style={{ flexDirection: 'row' }}>
+                                                        <View style={styles.size}>
+                                                            <Picker
+                                                                selectedValue={this.state.selectedSize}
+                                                                onValueChange={(itemValue, itemIndex) => this.setSize(itemValue)}
+                                                            >
+                                                                <Picker.Item label="Size" value="0" style={{ backgroundColor: 'gray' }} />
+                                                                <Picker.Item label={size_name} value={size_name} />
+                                                            </Picker>
+                                                        </View>
+                                                        <View style={styles.size}>
+                                                            <Picker
+                                                                selectedValue={this.state.selectedColor}
+                                                                onValueChange={(itemValue, itemIndex) => this.setColor(itemValue)}
+                                                            >
+                                                                <Picker.Item label="Color" value="0" />
+                                                                <Picker.Item label={color_name} value={color_name} />
+                                                            </Picker>
+                                                        </View>
+                                                        {btnChat}
+                                                    </View>
+                                                    <View style={styles.wraptitle}>
+                                                        <View style={{ width: 200 }}>
+                                                            <Text style={styles.title}>{product_name}</Text>
+                                                        </View>
+                                                        <Text style={styles.title}>Rp. {this.toPrice(product_price)}</Text>
+                                                    </View>
+                                                    <Text style={{color:'gray'}}>STORE : {storeName}</Text>
+                                                    <Text style={styles.PrdName}>Category  {category_name}</Text>
+                                                    <View>
+                                                    </View>
+                                                    <Text>Product Description</Text>
+                                                    <Text style={styles.desc}>
+                                                        {product_desc}
+                                                    </Text>
+                                                    <Text style={{ fontWeight: 'bold', fontSize: 24 }}>Pilihan lainya untukmu</Text>
+                                                    <SafeAreaView>
+                                                        <ScrollView
+                                                            horizontal={true}
+                                                        >
+                                                            <View style={{ flexDirection: 'row' }}>
                                                                 {
-                                                                    product_img && product_img.split(',').map((img) => {
+                                                                    foryou && foryou.map(({ id, product_name, product_price, product_img, category_name, color_name, size_name, rating, dibeli }) => {
+                                                                        let img = product_img.split(',')[0]
                                                                         return (
                                                                             <>
-                                                                                <Image source={{ uri: BASE_URL + img, width: 360, height: 400 }} />
+                                                                                <Card navigation={this.props.navigation} key={id} product_name={product_name} product_price={product_price} product_img={img} keyId={id} category={category_name} color={color_name} size={size_name} rating={rating} dibeli={dibeli} />
                                                                             </>
                                                                         )
                                                                     })
                                                                 }
-                                                            </ScrollView>
-                                                        </SafeAreaView>
-                                                    </View>
-                                                </Row>
-
-                                                <Row size={50}>
-                                                    <View style={styles.container}>
-                                                        <View style={{ flexDirection: 'row' }}>
-                                                            <View style={styles.size}>
-                                                                <Picker
-                                                                    selectedValue={this.state.selectedSize}
-                                                                    onValueChange={(itemValue, itemIndex) => this.setSize(itemValue)}
-                                                                >
-                                                                    <Picker.Item label="Size" value="0" style={{ backgroundColor: 'gray' }} />
-                                                                    <Picker.Item label={size_name} value={size_name} />
-                                                                </Picker>
                                                             </View>
-                                                            <View style={styles.size}>
-                                                                <Picker
-                                                                    selectedValue={this.state.selectedColor}
-                                                                    onValueChange={(itemValue, itemIndex) => this.setColor(itemValue)}
-                                                                >
-                                                                    <Picker.Item label="Color" value="0" />
-                                                                    <Picker.Item label={color_name} value={color_name} />
-                                                                </Picker>
-                                                            </View>
-                                                            {btnChat}
-                                                        </View>
-                                                        <View style={styles.wraptitle}>
-                                                            <View style={{ width: 200 }}>
-                                                                <Text style={styles.title}>{product_name}</Text>
-                                                            </View>
-                                                            <Text style={styles.title}>Rp. {this.toPrice(product_price)}</Text>
-                                                        </View>
-                                                        <Text style={{color:'gray'}}>STORE : {storeName}</Text>
-                                                        <Text style={styles.PrdName}>Category  {category_name}</Text>
-                                                        <View>
-                                                        </View>
-                                                        <Text>Product Description</Text>
-                                                        <Text style={styles.desc}>
-                                                            {product_desc}
-                                                        </Text>
-                                                        <Text style={{ fontWeight: 'bold', fontSize: 24 }}>Pilihan lainya untukmu</Text>
-                                                        <SafeAreaView>
-                                                            <ScrollView
-                                                                horizontal={true}
-                                                            >
-                                                                <View style={{ flexDirection: 'row' }}>
-                                                                    {
-                                                                        foryou && foryou.map(({ id, product_name, product_price, product_img, category_name, color_name, size_name, rating, dibeli }) => {
-                                                                            let img = product_img.split(',')[0]
-                                                                            return (
-                                                                                <>
-                                                                                    <Card navigation={this.props.navigation} key={id} product_name={product_name} product_price={product_price} product_img={img} keyId={id} category={category_name} color={color_name} size={size_name} rating={rating} dibeli={dibeli} />
-                                                                                </>
-                                                                            )
-                                                                        })
-                                                                    }
-                                                                </View>
-                                                            </ScrollView>
-                                                        </SafeAreaView>
-                                                        <Review idProduct={id_productDetails} avgRating={rating} />
-                                                    </View>
-                                                </Row>
-                                            </ScrollView>
-                                        </SafeAreaView>
-                                    </Grid>
-                                    {btnAddCart}
-                                </Container>
-                            </>
-                        )
+                                                        </ScrollView>
+                                                    </SafeAreaView>
+                                                    <Review idProduct={id_productDetails} avgRating={rating} />
+                                                </View>
+                                            </Row>
+                                        </ScrollView>
+                                    </SafeAreaView>
+                                </Grid>
+                                {btnAddCart}
+                            </Container>
+                        </>
+                    )
                     })
                 }
             </>

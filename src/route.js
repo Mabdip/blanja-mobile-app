@@ -44,6 +44,9 @@ import AddProduct from './screens/profile/seller/addProduct'
 import EditProduct from './screens/profile/seller/editProduct'
 import OrderedItem from './screens/profile/seller/ordererItem'
 
+import ListChat from './screens/profile/listChat'
+import ChatRoom from './screens/profile/chatRoom'
+
 import Splash from './screens/splash'
 
 import { useSocket } from './utils/context/SocketProvider'
@@ -161,6 +164,8 @@ const MainProfile = () => {
         <Stack.Screen name="ListProduct" component={ListProduct} />
         <Stack.Screen name="AddProduct" component={AddProduct} />
         <Stack.Screen name="EditProduct" component={EditProduct} />
+        <Stack.Screen name="ListChat" component={ListChat} />
+        <Stack.Screen name="ChatRoom" component={ChatRoom} />
         <Stack.Screen name="OrderedItem" component={OrderedItem} />
       </>
     </Stack.Navigator>
@@ -168,34 +173,12 @@ const MainProfile = () => {
 };
 
 const appRouter = () => {
-  const user_id = useSelector((state) => state.auth.name);
-  // const level = useSelector((state) => state.auth.level);
-  // const socket = useSocket()
-  // useEffect(() => {
-  //   if (level == 1) {
-  //     socket.on('fromSeller', msgEvent => {
-  //       showNotification('Notification', msgEvent, channel);
-  //     }
-  //     );
-  //     return () => {
-  //       socket.off('fromSeller');
-  //     };
-  //   } else {
-  //     socket.on('fromBuyer', msgEvent => {
-  //       showNotification('Notification', msgEvent, channel);
-  //     }
-  //     );
-  //     return () => {
-  //       socket.off('fromBuyer');
-  //     };
-  //   }
-  // }, []);
+  const user_id = useSelector((state) => state.auth.id);
   return (
     <>
       <SocketProvider id={user_id}>
         <Stack.Navigator headerMode="none">
           <Stack.Screen name="Splash" component={Splash} />
-
           <Stack.Screen name="Tab" component={MyTabs} />
           <Stack.Screen name="Notification" component={Notification} />
           <Stack.Screen name="Details" component={DetailPage} />

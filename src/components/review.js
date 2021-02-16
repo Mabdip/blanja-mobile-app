@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Container, Card, CardItem, Left, Body, Right } from 'native-base'
 import { Image, Dimensions, StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid'
+import {vw, vh} from 'react-native-expo-viewport-units'
 import { BASE_URL } from '@env'
 import axios from 'axios'
 
@@ -19,14 +20,12 @@ class Review extends Component {
                     review: data.data,
                     isEmpty: false
                 })
-            }).catch(({ response }) => {
-                console.log(response.data)
+            }).catch(({ err }) => {
+                console.log(err)
             })
     }
-
     render() {
         const { isEmpty, review } = this.state
-        const totalReview = review.length
         let starOne = 0
         let starTwo = 0
         let starThree = 0
@@ -91,7 +90,7 @@ class Review extends Component {
                         return (
                             <>
                                 <Row>
-                                    <Card style={{ width: '100%' }}>
+                                    <Card style={{ width:vw(94) }}>
                                         <CardItem>
                                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                                 <View style={{ flexDirection: 'row', width: 200 }}>
@@ -114,12 +113,6 @@ class Review extends Component {
                                         <CardItem style={{ maginHorizontal: 20 }}>
                                             <Text>{review}</Text>
                                         </CardItem>
-                                        <CardItem>
-                                            <Right style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                                <Text>helpful </Text>
-                                                <Image source={require('./../assets/icons/thumbs.png')} />
-                                            </Right>
-                                        </CardItem>
                                     </Card>
                                 </Row>
                             </>
@@ -137,9 +130,8 @@ class Review extends Component {
 
                     <Grid>
                         <Row>
-                            <Col size={3}>
-                                <Text style={{ fontSize: 48 }}>{this.props.avgRating}</Text>
-                                <Text style={{ fontSize: 12, color: '#9B9B9B' }}>{totalReview} ratings</Text>
+                            <Col size={2}>
+                                <Text style={{ fontSize: 40, fontWeight:'bold' }}>{this.props.avgRating.toString().substr(0,3)}/5</Text>
                             </Col>
                             <Col size={3} style={{ alignItems: 'flex-end', flexDirection: 'column' }}>
                                 <Image source={require('../assets/icons/5stars-removebg-preview.png')} style={{ marginBottom: 3 }} />
@@ -165,7 +157,7 @@ class Review extends Component {
                         </Row>
 
                         <Row style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text>{review.length} Reviews</Text>
+                            <Text style={{fontWeight:'bold'}}>{review.length} Reviews</Text>
                             <Text>with photos</Text>
                         </Row>
                         {reviewItems}

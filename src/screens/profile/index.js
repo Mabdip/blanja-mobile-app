@@ -3,6 +3,7 @@ import { Container, Header, Title, Content, Button, Left, Body, Text, Right } fr
 import { Image, View, TouchableOpacity, Alert } from 'react-native'
 import { connect } from 'react-redux'
 import { setLoginfalse, removeEmail, removeId, removeName } from './../../utils/redux/ActionCreators/auth'
+import Blank from './../emptyScreen/blank'
 // import EmptyPage from './../emptyScreen/index'
 import { BASE_URL } from '@env'
 import axios from 'axios'
@@ -24,18 +25,29 @@ class Profile extends React.Component {
                     order: data.data
                 })
             }).catch(({ response }) => {
+                this.setState({
+                    order: []
+                })
                 console.log(response.data)
             })
     }
 
     getAddress = () => {
-        axios.get(BASE_URL + `/address/${this.props.auth.id}`)
+        const config = {
+            headers: {
+                'x-access-token': 'Bearer ' + this.props.auth.token,
+            },
+        };
+        axios.get(BASE_URL + `/address/${this.props.auth.id}`, config)
             .then(({ data }) => {
                 // console.log(data)
                 this.setState({
                     address: data.data
                 })
             }).catch(({ response }) => {
+                this.setState({
+                    address:[]
+                })
                 console.log(response)
             })
     }
@@ -93,15 +105,6 @@ class Profile extends React.Component {
                             <Text style={{ color: 'gray', marginBottom: 10 }}>Manage your Ordered Item</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ borderBottomColor: 'gray', borderBottomWidth: 0.2, marginLeft: 10, marginRight: 40 }}
-                            onPress={() => { this.props.navigation.navigate('Chat') }}
-                        >
-
-                            <View style={{ paddingLeft: 10, marginTop: 5 }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>Chat</Text>
-                                <Text style={{ color: 'gray', marginBottom: 10 }}>Chat Fiture</Text>
-                            </View>
-                        </TouchableOpacity>
                 </>
         } else {
             componentProfile = <>
@@ -125,49 +128,61 @@ class Profile extends React.Component {
         }
         return (
             <>
-                <Container>
-                    <Header transparent>
-                        <Left>
-                            <Button transparent
-                                onPress={() => { this.props.navigation.goBack() }}
+                {auth.isLogin ?
+                    (
+                        <Container>
+                            <Header transparent>
+                                <Left>
+                                    <Button transparent
+                                        onPress={() => { this.props.navigation.goBack() }}
+                                    >
+                                        <Image source={require('./../../assets/back.png')} />
+                                    </Button>
+                                </Left>
+                                <Body />
+                                <Right>
+                                    <Button transparent>
+                                        <Image source={require('./../../assets/search.png')} />
+                                    </Button>
+                                </Right>
+                            </Header>
+                            <Content>
+                                <Text style={{ fontWeight: 'bold', fontSize: 42, marginLeft: 10, marginRight: 10 }}>My Profile</Text>
+                                <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                                    <Image source={require('./../../assets/profile.png')} style={{ width: 80, height: 80, borderRadius: 40, marginLeft: 10, marginRight: 10, marginBottom: 50 }} />
+                                    <View style={{ paddingLeft: 10, marginTop: 5 }}>
+                                        <Text style={{ fontWeight: 'bold', fontSize: 24 }}>{this.props.auth.name}</Text>
+                                        <Text style={{ color: 'gray' }}>{this.props.auth.email}</Text>
+                                    </View>
+                                </View>
+                                {componentProfile}
+                                <TouchableOpacity style={{ borderBottomColor: 'gray', borderBottomWidth: 0.2, marginLeft: 10, marginRight: 40 }}
+                                    onPress={() => { this.props.navigation.navigate('ListChat') }}
+                                >
+
+                                    <View style={{ paddingLeft: 10, marginTop: 5 }}>
+                                        <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>Chat Room</Text>
+                                        <Text style={{ color: 'gray', marginBottom: 10 }}>Chat Feature ( BETA )</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{ borderBottomColor: 'gray', borderBottomWidth: 0.2, marginLeft: 10, marginRight: 40 }}
+                                    onPress={() => { this.props.navigation.navigate('Setting') }}
+                                >
+
+                                    <View style={{ paddingLeft: 10, marginTop: 5 }}>
+                                        <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>Settings</Text>
+                                        <Text style={{ color: 'gray', marginBottom: 10 }}>Notification, Password</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </Content>
+                            <Button full rounded danger style={{ marginHorizontal: 10, marginBottom: 15 }}
+                                onPress={this.promptLogout}
                             >
-                                <Image source={require('./../../assets/back.png')} />
+                                <Text>Logout</Text>
                             </Button>
-                        </Left>
-                        <Body />
-                        <Right>
-                            <Button transparent>
-                                <Image source={require('./../../assets/search.png')} />
-                            </Button>
-                        </Right>
-                    </Header>
-                    <Content>
-                        <Text style={{ fontWeight: 'bold', fontSize: 42, marginLeft: 10, marginRight: 10 }}>My Profile</Text>
-                        <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                            <Image source={require('./../../assets/profile.png')} style={{ width: 80, height: 80, borderRadius: 40, marginLeft: 10, marginRight: 10, marginBottom: 50 }} />
-                            <View style={{ paddingLeft: 10, marginTop: 5 }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 24 }}>{this.props.auth.name}</Text>
-                                <Text style={{ color: 'gray' }}>{this.props.auth.email}</Text>
-                            </View>
-                        </View>
-                        {componentProfile}
-                        <TouchableOpacity style={{ borderBottomColor: 'gray', borderBottomWidth: 0.2, marginLeft: 10, marginRight: 40 }}
-                            onPress={() => { this.props.navigation.navigate('Setting') }}
-                        >
+                        </Container>
 
-                            <View style={{ paddingLeft: 10, marginTop: 5 }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>Settings</Text>
-                                <Text style={{ color: 'gray', marginBottom: 10 }}>Notification, Password</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </Content>
-                    <Button full rounded danger style={{ marginHorizontal: 10, marginBottom: 15 }}
-                        onPress={this.promptLogout}
-                    >
-                        <Text>Logout</Text>
-                    </Button>
-                </Container>
-
+                    ) : (<Blank />)}
             </>
         )
     }

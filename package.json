@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.13.4",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/bottom-tabs": "^5.11.2",
     "@react-navigation/native": "^5.8.10",
@@ -20,6 +21,7 @@
     "react-native": "0.63.4",
     "react-native-dotenv": "^2.5.0",
     "react-native-easy-grid": "^0.2.2",
+    "react-native-expo-viewport-units": "0.0.8",
     "react-native-gesture-handler": "^1.9.0",
     "react-native-image-crop-picker": "^0.35.2",
     "react-native-push-notification": "^7.1.1",
@@ -32,6 +34,7 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
     "redux-promise-middleware": "^6.1.2",
     "socket.io-client": "2.1.0"
   },

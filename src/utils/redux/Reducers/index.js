@@ -1,13 +1,13 @@
 import { combineReducers } from "redux";
-import authReducer from './auth'
-import addressReducer from './address'
-import bagReducer from './bag'
-import notifReducer from './notification'
+import auth from './auth'
+import address from './address'
+import bag from './bag'
+import notification from './notification'
 const reducers = combineReducers({
-  auth : authReducer,
-  address: addressReducer,
-  bag: bagReducer,
-  notification:notifReducer
+  auth,
+  address,
+  bag,
+  notification,
 });
 
 export default reducers;

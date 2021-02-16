@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Header, Body, Left, Content, View, Text, Button } from 'native-base'
-import { TextInput, ToastAndroid, ScrollView } from 'react-native'
-import { useSelector } from 'react-redux'
+import { TextInput, ToastAndroid, ScrollView, Image, FlatList, SafeAreaView, KeyboardAvoidingView, Animated } from 'react-native'
+import { setLoginfalse } from './../../utils/redux/ActionCreators/auth'
+import { useSelector, connect } from 'react-redux'
 import axios from 'axios'
 import { BASE_URL } from "@env"
 import { useSocket } from './../../utils/context/SocketProvider'
+import { vw, vh } from 'react-native-expo-viewport-units';
 
 let number = 0
 
-const ChatRoom = ({ navigation, route }) => {
+const ChatRoom = ({ navigation, route, setLoginfalse }) => {
+    const keyboardHeight = new Animated.Value(0)
+
     useEffect(() => {
+        getName()
         getNewMessage()
         console.log('did mount')
     }, [])
@@ -29,6 +34,7 @@ const ChatRoom = ({ navigation, route }) => {
     const splitRoom = room_id.split("S")[1].split("B")
     const [chat, setChat] = useState([])
     const [message, setMessage] = useState('')
+    const [name, setName] = useState('')
     const seller = splitRoom[0]
     const buyer = splitRoom[1]
     const sender = auth.id
@@ -39,24 +45,52 @@ const ChatRoom = ({ navigation, route }) => {
         },
     };
 
-    const sendMessage = () => {
-        const Msg = {
-            seller: seller,
-            buyer: buyer,
-            chatRoom: room_id,
-            sender: sender,
-            message: message
+    const getName = () => {
+        if (sender != buyer) {
+            axios.get(BASE_URL + '/user/name/' + buyer)
+                .then(({ data }) => {
+                    setName(data.data.fullname)
+                }).catch(({ response }) => {
+                    console.log(response)
+                })
+        } else {
+            axios.get(BASE_URL + '/user/name/' + seller)
+                .then(({ data }) => {
+                    setName(data.data.fullname)
+                }).catch(({ response }) => {
+                    console.log(response)
+                })
         }
-        console.log(Msg)
-        axios.post(BASE_URL + '/chat/addMessage', Msg, config)
-            .then(({ data }) => {
-                ToastAndroid.show('Message Sent', ToastAndroid.SHORT, ToastAndroid.CENTER);
-                setMessage('')
-                console.log('sent')
-                number = number + 1
-            }).catch(({ response }) => {
-                console.log(response.data)
-            })
+    }
+
+    const sendMessage = () => {
+        if (message != '') {
+            const Msg = {
+                seller: seller,
+                buyer: buyer,
+                roomChat: room_id,
+                sender: sender,
+                message: message
+            }
+            console.log(Msg)
+            axios.post(`${BASE_URL}/chat/addMessage`, Msg, config)
+                .then(({ data }) => {
+                    ToastAndroid.show('Message Sent', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                    setMessage('')
+                    console.log('sent')
+                    number = number + 1
+                }).catch(({ response }) => {
+                    console.log(response.status)
+                    if (response.status == 401) {
+                        ToastAndroid.show('SESI ANDA TELAH HABIS', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                        if (setLoginfalse()) {
+                            navigation.replace('Profile')
+                        }
+                    }
+                })
+        } else {
+            ToastAndroid.show('Message cannot be empty', ToastAndroid.SHORT, ToastAndroid.CENTER);
+        }
     }
 
     const getNewMessage = () => {
@@ -73,73 +107,75 @@ const ChatRoom = ({ navigation, route }) => {
             <Container>
                 <Header transparent>
                     <Left>
-                        <Button primary
+                        <Button transparent
                             onPress={() => { navigation.goBack() }}
                         >
-                            <Text>Back</Text>
+                            <Image source={require('./../../assets/back.png')} />
                         </Button>
                     </Left>
                     <Body>
-                        <Text>ChatRoom {room_id}</Text>
+                        <Text style={{ fontWeight: 'bold' }}>{name}</Text>
                     </Body>
                 </Header>
-                <Content>
-                    {
-                        chat.map(({ sender_id, sender_name, message, created_at }) => {
-                            let chatMsg;
-                            if (sender_id == auth.id) {
-                                chatMsg =
-                                    <>
-                                        <Button transparent></Button>
-                                        <View>
-                                            <Button rounded bordered primary ><Text>You : {message}</Text></Button>
-                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                                <Button transparent></Button>
-                                                <Button small rounded bordered primary><Text>{created_at.toString().split('T')[1].substr(0, 5)}</Text></Button>
+                <View
+                    style={{ flex: 1, backgroundColor: '#c4c4c4' }}
+                >
+                    <FlatList
+                        data={chat}
+                        inverted
+                        keyExtractor={item => item.id.toString()}
+                        renderItem={({ item }) => (
+                            item.sender_id == auth.id ? (
+                                <View style={{ marginVertical: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <View></View>
+                                    <View style={{ borderColor: 'red', backgroundColor: 'white', borderWidth: 1, minWidth: vw(25), maxWidth: vw(60), borderRadius: 5, marginHorizontal: vw(1) }}>
+                                        <View style={{ paddingHorizontal: vw(3), paddingVertical: vw(2) }}>
+                                            <Text style={{ textAlign: 'right', fontWeight: 'bold', color: 'red' }}>You</Text>
+                                            <Text >{item.message}</Text>
+                                            <Text style={{ fontSize: 10, marginTop: 8, color: 'gray', textAlign: 'right' }}>{item.created_at.toString().split('T')[0]} | {item.created_at.toString().split('T')[1].substr(0, 5)}</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            ) : (
+                                    <View style={{ marginVertical: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                                        <View style={{ borderColor: 'red', backgroundColor: 'white', borderWidth: 1, minWidth: vw(30), maxWidth: vw(60), borderRadius: 5, marginHorizontal: vw(1) }}>
+                                            <View style={{ paddingHorizontal: vw(3), paddingVertical: vw(2) }}>
+                                                <Text style={{ textAlign: 'left', fontWeight: 'bold', color: 'red' }}>{item.sender_name}</Text>
+                                                <Text>{item.message}</Text>
+                                                <Text style={{ fontSize: 10, marginTop: 8, textAlign: 'right' }}>{item.created_at.toString().split('T')[0]} | {item.created_at.toString().split('T')[1].substr(0, 5)}</Text>
                                             </View>
                                         </View>
-                                    </>
-                            } else {
-                                chatMsg =
-                                    <>
-                                        <View>
-                                            <Button rounded bordered danger ><Text>{sender_name} : {message}</Text></Button>
-                                            <Button small rounded bordered danger><Text>{created_at.toString().split('T')[1].substr(0, 5)}</Text></Button>
-                                        </View>
-                                        <Button transparent></Button>
-                                    </>
-                            }
-                            return (
-                                <>
-                                    <View style={{ marginVertical: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                                        {chatMsg}
+                                        <View></View>
                                     </View>
-                                </>
-                            )
-                        })
-                    }
-                </Content>
-                <View>
+                                )
+                        )}
+                    />
+                </View>
+                <View style={{ flexDirection: 'row' }}>
                     <TextInput
                         multiline={true}
                         style={{
-                            marginTop: 1,
+                            marginTop: 3,
                             borderColor: 'gray',
                             borderWidth: 2,
                             backgroundColor: '#fff',
                             marginBottom: 8,
-                            borderRadius: 4,
-                            height: 80,
+                            borderRadius: 15,
+                            paddingHorizontal: vw(3),
+                            height: vh(7),
+                            width: vw(75),
+                            marginLeft: vw(2),
+                            marginRight: vw(2),
                             textAlignVertical: 'top',
                         }}
-                        placeholder="Message"
+                        placeholder="Type a message"
                         value={message}
                         onChangeText={(text) => {
                             setMessage(text)
                         }}
                     />
-                    <Button full danger rounded onPress={sendMessage}>
-                        <Text style={{ color: '#fff' }}>Send</Text>
+                    <Button danger rounded style={{ width: vh(10), height: vh(7), marginTop: 3 }} onPress={sendMessage} >
+                        <Text>SEND</Text>
                     </Button>
                 </View>
             </Container>
@@ -147,4 +183,10 @@ const ChatRoom = ({ navigation, route }) => {
     )
 }
 
-export default ChatRoom
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setLoginfalse: () =>
+            dispatch(setLoginfalse()),
+    };
+};
+export default connect(null, mapDispatchToProps)(ChatRoom);

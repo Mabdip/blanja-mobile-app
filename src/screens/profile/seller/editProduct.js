@@ -1,7 +1,8 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Picker, Modal } from 'react-native'
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Picker, Modal, KeyboardAvoidingView } from 'react-native'
 import { Container, Header, Content, Form, Item, Input, Button, Label, Textarea, Left, Body, Right } from 'native-base';
 import { BASE_URL } from "@env"
+import { setLoginfalse } from './../../../utils/redux/ActionCreators/auth'
 import axios from 'axios'
 import ImagePicker from 'react-native-image-crop-picker';
 import { connect } from 'react-redux'
@@ -165,9 +166,15 @@ class AddProduct extends React.Component {
                 this.setState({
                     modalVisible: false
                 })
-                this.props.navigation.push('ListProduct')
+                this.props.navigation.replace('ListProduct')
             })
             .catch((err) => {
+                if (err.response.status == 401) {
+                    ToastAndroid.show('SESI ANDA TELAH HABIS', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                    if (this.props.dispatch(setLoginfalse())) {
+                        this.props.navigation.replace('Login')
+                    }
+                }
                 console.log(err.response.data);
             });
     }
@@ -218,16 +225,19 @@ class AddProduct extends React.Component {
                         <ScrollView style={{ height: 550, backgroundColor: 'white' }}>
                             <View>
                                 <Form>
-                                    <Item stackedLabel>
-                                        <Label >Product Name</Label>
-                                        <Input name="product_name" value={product_name} onChangeText={(text) => { this.setState({ product_name: text }) }} />
-                                    </Item>
+                                    <KeyboardAvoidingView style={{ marginLeft: 10 }}>
+                                        <Label style={{fontWeight:'bold'}}>Product Name</Label>
+                                        <Item regular>
+                                            <Input name="product_name" value={product_name} onChangeText={(text) => { this.setState({ product_name: text }) }} />
+                                        </Item>
+                                    </KeyboardAvoidingView>
+                                    <Label style={{fontWeight:'bold', marginLeft:10}}>Category</Label>
                                     <View style={styles.size}>
                                         <Picker
                                             selectedValue={category_id}
                                             onValueChange={(itemValue, itemIndex) => this.setCategory(itemValue)}
                                         >
-                                            <Picker.Item label="Category" value="0" style={{ backgroundColor: 'gray' }} />
+                                            <Picker.Item label="select--" value="0" style={{ backgroundColor: 'gray' }} />
                                             <Picker.Item label="T-shirt" value="1" />
                                             <Picker.Item label="Short" value="2" />
                                             <Picker.Item label="Jacket" value="3" />
@@ -235,24 +245,26 @@ class AddProduct extends React.Component {
                                             <Picker.Item label="Shoes" value="5" />
                                         </Picker>
                                     </View>
+                                    <Label style={{fontWeight:'bold', marginLeft:10}}>Color</Label>
                                     <View style={styles.size}>
                                         <Picker
                                             selectedValue={color_id}
                                             onValueChange={(itemValue, itemIndex) => this.setColor(itemValue)}
                                         >
-                                            <Picker.Item label="Color" value="0" style={{ backgroundColor: 'gray' }} />
+                                            <Picker.Item label="select--" value="0" style={{ backgroundColor: 'gray' }} />
                                             <Picker.Item label="Red" value="1" />
                                             <Picker.Item label="Green" value="2" />
                                             <Picker.Item label="Blue" value="3" />
                                             <Picker.Item label="Black" value="4" />
                                         </Picker>
                                     </View>
+                                    <Label style={{fontWeight:'bold', marginLeft:10}}>Size</Label>
                                     <View style={styles.size}>
                                         <Picker
                                             selectedValue={size_id}
                                             onValueChange={(itemValue, itemIndex) => this.setSize(itemValue)}
                                         >
-                                            <Picker.Item label="Size" value="0" style={{ backgroundColor: 'gray' }} />
+                                            <Picker.Item label="select--" value="0" style={{ backgroundColor: 'gray' }} />
                                             <Picker.Item label="XS" value="1" />
                                             <Picker.Item label="S" value="2" />
                                             <Picker.Item label="M" value="3" />
@@ -260,24 +272,27 @@ class AddProduct extends React.Component {
                                             <Picker.Item label="XL" value="5" />
                                         </Picker>
                                     </View>
+                                    <Label style={{fontWeight:'bold', marginLeft:10}}>Condition</Label>
                                     <View style={styles.size}>
                                         <Picker
                                             selectedValue={condition_id}
                                             onValueChange={(itemValue, itemIndex) => this.setCondition(itemValue)}
                                         >
-                                            <Picker.Item label="Condition" value="0" style={{ backgroundColor: 'gray' }} />
+                                            <Picker.Item label="select--" value="0" style={{ backgroundColor: 'gray' }} />
                                             <Picker.Item label="New" value="1" />
                                             <Picker.Item label="Second" value="2" />
                                         </Picker>
                                     </View>
-                                    <Item stackedLabel>
-                                        <Label >Price</Label>
-                                        <Input name="price" value={product_price} onChangeText={(text) => { this.setState({ product_price: text }) }} />
-                                    </Item>
-                                    <View style={{ marginLeft: 15 }}>
-                                        <Label >Product Description</Label>
+                                    <KeyboardAvoidingView style={{ marginLeft: 10 }}>
+                                        <Label style={{fontWeight:'bold'}}>Price</Label>
+                                        <Item regular>
+                                            <Input name="price" value={product_price} onChangeText={(text) => { this.setState({ product_price: text }) }} />
+                                        </Item>
+                                    </KeyboardAvoidingView>
+                                    <View style={{ marginLeft: 10 }}>
+                                        <Label style={{fontWeight:'bold'}}>Product Description</Label>
                                         <Textarea rowSpan={5} bordered placeholder="Description" name="description" value={product_desc} onChangeText={(text) => { this.setState({ product_desc: text }) }} />
-                                        <View style={{ flexDirection: 'row' }}>
+                                        <View style={{ flexDirection: 'row', justifyContent:'space-between', marginTop:10 }}>
                                             {product_img && product_img.map((item) => {
                                                 return (
                                                     <Image
@@ -290,8 +305,8 @@ class AddProduct extends React.Component {
                                             {prevImgFromCamera}
                                             {thumbPhoto}
                                         </View>
-                                        <View>
-                                            <Label>Product picture</Label>
+                                        <View style={{marginTop:15}}>
+                                            <Label style={{fontWeight:'bold'}}>Product picture</Label>
                                             <TouchableOpacity
                                                 activeOpacity={0.5}
                                                 style={styles.btnSection}
@@ -360,21 +375,22 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     size: {
-        width: '100%',
+        width: '97%',
         height: 40,
         // paddingVertical: 10,
         backgroundColor: '#fff',
         borderRadius: 8,
-        borderColor: '#9B9B9B',
+        borderColor: 'gray',
+        borderWidth: 0.4,
         paddingHorizontal: 5,
-        paddingBottom: 15
+        paddingBottom: 50,
+        marginVertical: 5, marginHorizontal: 10
     },
     imageStyle: {
         width: 200,
         height: 200,
         width: 100,
         height: 100,
-        margin: 5,
         borderColor: 'black',
         borderRadius: 5,
         borderWidth: 1,

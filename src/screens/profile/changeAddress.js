@@ -58,8 +58,8 @@ export default class ChangeAddress extends React.Component {
                     postal: data.data.postal,
                     phone: data.data.phone,
                 })
-            }).catch(({ response }) => {
-                console.log(response.data)
+            }).catch(({ err }) => {
+                console.log(err)
             })
     }
 
