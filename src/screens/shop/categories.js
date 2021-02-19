@@ -329,7 +329,7 @@ class ShopCategory extends Component {
             modifiedUrl = '&'
         }
         this.setModalSortVisible(false)
-        axios.get(BASE_URL + this.state.baseUrl + modifiedUrl + 'sortBy=created_at&orderBy=asc')
+        axios.get(BASE_URL + this.state.baseUrl + modifiedUrl + 'sortBy=create_at&orderBy=asc')
             .then(({ data }) => {
                 this.setState({
                     products: data.data.products,

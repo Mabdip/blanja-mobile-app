@@ -59,10 +59,10 @@ export default class componentName extends Component {
                             <Text style={{ fontWeight: 'bold', fontSize: 42, marginRight: 10, marginTop: 20, marginBottom: 10, width: 200 }}>Costumer Orders</Text>
                         </View>
                         {
-                            orderData && orderData.map(({ trxId, trackingNumber, qty, total, created_at, status, status_id }) => {
+                            orderData && orderData.map(({ trxId, trackingNumber, qty, total, create_at, status, status_id }) => {
                                 return (
                                     <>
-                                        <CardOrder trxId={trxId} trackingNumber={trackingNumber} qty={qty} total={total} created_at={created_at} idStatus={status_id} status={status} navigation={this.props.navigation} />
+                                        <CardOrder trxId={trxId} trackingNumber={trackingNumber} qty={qty} total={total} create_at={create_at} idStatus={status_id} status={status} navigation={this.props.navigation} />
                                     </>
                                 )
                             })

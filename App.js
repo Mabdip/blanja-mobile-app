@@ -14,7 +14,7 @@ const persistedStore = persistStore(store)
 const appRouter = () => {
   return (
     <Provider store={store}>
-      <PersistGate persistor={persistedStore}>
+      <PersistGate persistor={persistedStore} loading={null}>
         <NavigationContainer>
           <Router />
         </NavigationContainer>

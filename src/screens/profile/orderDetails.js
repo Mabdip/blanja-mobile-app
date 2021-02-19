@@ -70,10 +70,10 @@ class OrderDetails extends React.Component {
     }
 
     render() {
-        const { TrxId, created_at, trackingNumber, status, qty, address, city, postal, payment, total, cardOrder, nama_kurir, waktu, tarif } = this.state.orderDetails
+        const { TrxId, create_at, trackingNumber, status, qty, address, city, postal, payment, total, cardOrder, nama_kurir, waktu, tarif } = this.state.orderDetails
         const { trackNumb, modalTrackingVisible } = this.state
         console.log(this.state.trackNumb)
-        const newDate = `${created_at}`
+        const newDate = `${create_at}`
         let statusDelivery;
         let btnAction;
         if (status == 1) {

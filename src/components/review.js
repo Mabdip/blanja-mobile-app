@@ -13,7 +13,7 @@ class Review extends Component {
     }
 
     componentDidMount = () => {
-        // console.log(BASE_URL + '/user/getReview/' + this.props.idProduct)
+        console.log(BASE_URL + '/user/getReview/' + this.props.idProduct)
         axios.get(BASE_URL + '/user/getReview/' + this.props.idProduct)
             .then(({ data }) => {
                 this.setState({

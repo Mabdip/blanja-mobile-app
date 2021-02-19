@@ -29,7 +29,7 @@ export default class cardOrder extends React.Component {
                                 Order No :
                                         <Text style={{ color: 'gray', }}> {this.props.trxId}</Text>
                             </Text>
-                            <Text style={{ color: 'green' }}>{this.props.created_at.toString().substr(0, 10)}</Text>
+                            <Text style={{ color: 'green' }}>{this.props.create_at.toString().substr(0, 10)}</Text>
                         </View>
                         <Text style={{ marginTop: 10, color: 'gray', fontSize: 18 }}>
                             Tracking Number :

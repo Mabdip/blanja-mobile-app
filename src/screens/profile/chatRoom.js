@@ -132,7 +132,7 @@ const ChatRoom = ({ navigation, route, setLoginfalse }) => {
                                         <View style={{ paddingHorizontal: vw(3), paddingVertical: vw(2) }}>
                                             <Text style={{ textAlign: 'right', fontWeight: 'bold', color: 'red' }}>You</Text>
                                             <Text >{item.message}</Text>
-                                            <Text style={{ fontSize: 10, marginTop: 8, color: 'gray', textAlign: 'right' }}>{item.created_at.toString().split('T')[0]} | {item.created_at.toString().split('T')[1].substr(0, 5)}</Text>
+                                            <Text style={{ fontSize: 10, marginTop: 8, color: 'gray', textAlign: 'right' }}>{item.create_at.toString().split('T')[0]} | {item.create_at.toString().split('T')[1].substr(0, 5)}</Text>
                                         </View>
                                     </View>
                                 </View>
@@ -142,7 +142,7 @@ const ChatRoom = ({ navigation, route, setLoginfalse }) => {
                                             <View style={{ paddingHorizontal: vw(3), paddingVertical: vw(2) }}>
                                                 <Text style={{ textAlign: 'left', fontWeight: 'bold', color: 'red' }}>{item.sender_name}</Text>
                                                 <Text>{item.message}</Text>
-                                                <Text style={{ fontSize: 10, marginTop: 8, textAlign: 'right' }}>{item.created_at.toString().split('T')[0]} | {item.created_at.toString().split('T')[1].substr(0, 5)}</Text>
+                                                <Text style={{ fontSize: 10, marginTop: 8, textAlign: 'right' }}>{item.create_at.toString().split('T')[0]} | {item.create_at.toString().split('T')[1].substr(0, 5)}</Text>
                                             </View>
                                         </View>
                                         <View></View>

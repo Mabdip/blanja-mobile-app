@@ -16,7 +16,7 @@ const listChat = ({ navigation }) => {
         },
     };
 
-    const ChatRoom = () => {
+    const roomChat = () => {
         if (auth.level == 2) {
             axios.get(BASE_URL + `/chat/chatRoomSeller`, config)
                 .then(({ data }) => {
@@ -36,7 +36,7 @@ const listChat = ({ navigation }) => {
         }
     }
     useEffect(() => {
-        ChatRoom()
+        roomChat()
     }, [])
     return (
         <>
@@ -61,8 +61,8 @@ const listChat = ({ navigation }) => {
                     </View>
                     <Text style={{fontSize:24, marginLeft:20, marginBottom:10}}>Chat List</Text>
                     {
-                        chatList.map(({ chatRoom }) => {
-                            return <List chatRoom={chatRoom} navigation={navigation} />
+                        chatList.map(({ roomChat }) => {
+                            return <List roomChat={roomChat} navigation={navigation} />
                         })
                     }
                 </Content>
